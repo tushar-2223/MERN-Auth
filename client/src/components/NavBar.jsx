@@ -10,7 +10,8 @@ const NavBar = () => {
 
   
   const RenderMenu = () => {
-    //if contaxt api USER state true than show logout page
+    //in context api state value is true then logout visible otherwise signin/signup visible 
+    //nav bar toggle code
     if (state) {
       return (
         <>
