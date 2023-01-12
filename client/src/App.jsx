@@ -9,6 +9,7 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import Error from './components/Error'
 import Logout from './components/Logout'
+import Editdetail from './components/Editdetail'
 
 import { initialState,reducer } from './reducer/UseReducer'
 // toggle nav
@@ -36,6 +37,9 @@ const Routing = () => {
       />
       <Route path="logout"
         element={<Logout />}
+      />
+      <Route path="editdetail"
+        element={<Editdetail />}
       />
       <Route path="*"
         element={<Error />}

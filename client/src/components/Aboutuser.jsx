@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react'
 import mypic from "../images/myphoto.jpg"
-import {useNavigate} from 'react-router-dom'
+import {useNavigate,Link} from 'react-router-dom'
 
 
 const About = () => {
@@ -50,9 +50,9 @@ const About = () => {
             <h6>{ userData.work }</h6>
             <p className='profile-rating mt-3 mb-5'>RANKING <span> 1/10 </span></p>
 
-            <div className="profile__edit__btn mt-3">
+            <Link to="/editdetail" className="profile__edit__btn mt-3">
               <input type="submit" className='profilebtn' name='btnAddmore' value="Edit Profile" />
-            </div>
+            </Link>
           </div>
         </div>
 

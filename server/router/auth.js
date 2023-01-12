@@ -1,13 +1,15 @@
+/** @format */
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authenticate = require("../middleware/authenticate")
+const authenticate = require('../middleware/authenticate');
 
 require('../db/conn');
 const User = require('../model/userSchema');
 
-const cookieParser = require("cookie-parser");
+const cookieParser = require('cookie-parser');
 router.use(cookieParser());
 
 router.get('/', (req, res) => {
@@ -42,7 +44,6 @@ router.get('/', (req, res) => {
 //     // res.json({ message: req.body });
 // })
 
-
 // === Using Async-Await register auth/validation==
 
 router.post('/register', async (req, res) => {
@@ -52,6 +53,9 @@ router.post('/register', async (req, res) => {
   if (!name || !email || !phone || !work || !password || !cpassword) {
     return res.status(422).json({ error: 'fill the proper details' });
   }
+  // else if (password < 5) {
+  //   return res.status(400).json({ error: 'error' });
+  // }
 
   try {
     const userExist = await User.findOne({ email: email });
@@ -61,7 +65,7 @@ router.post('/register', async (req, res) => {
     }
 
     const user = new User({ name, email, phone, work, password, cpassword });
-    
+
     //bcript password middleware here before save ./model/userschema//
 
     const userRegister = await user.save();
@@ -79,7 +83,7 @@ router.post('/register', async (req, res) => {
 });
 
 // login auth/validation
-router.post("/signin", async (req, res) => {
+router.post('/signin', async (req, res) => {
   // fetch data
   console.log(req.body);
 
@@ -87,10 +91,10 @@ router.post("/signin", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "filled the proper data" })
+      return res.status(400).json({ error: 'filled the proper data' });
     }
 
-    const userLogin = await User.findOne({ email: email })
+    const userLogin = await User.findOne({ email: email });
 
     // console.log(userLogin); //get all data
 
@@ -104,76 +108,108 @@ router.post("/signin", async (req, res) => {
       // console.log(token); //debug token
 
       //== stored our jwt token in cookie
-      res.cookie("jwtoken", token, {
+      res.cookie('jwtoken', token, {
         // optional
         expires: new Date(Date.now() + 25892000000),
-        httpOnly: true
-      })
+        httpOnly: true,
+      });
 
       if (!isMatch) {
-        res.status(400).json({ error: "Invalid Credientials" });
+        res.status(400).json({ error: 'Invalid Credientials' });
       } else {
-        res.json({ message: "user signin successfully" })
+        res.json({ message: 'user signin successfully' });
       }
     } else {
-      res.status(400).json({ error: "Invalid Credientials" });
+      res.status(400).json({ error: 'Invalid Credientials' });
     }
-
   } catch (err) {
     console.log(err);
   }
-
 });
 
 // about us page
-router.get('/about',authenticate, (req, res) => {
+router.get('/about', authenticate, (req, res) => {
   // console.log("hello my about")
   res.send(req.rootUser);
 });
 
-
 // get user data for contact us page API
-router.get('/getdata',authenticate, (req, res) => {
+router.get('/getdata', authenticate, (req, res) => {
   // console.log("hello my getdata")
   res.send(req.rootUser);
-})
+});
 
 //contact page
-router.post('/contact',authenticate, async (req, res) => {
+router.post('/contact', authenticate, async (req, res) => {
+  const { name, email, phone, message } = req.body;
 
-    const { name, email, phone, message } = req.body;
-
-    if (!name || !email || !phone || !message) {
-      console.log("filled the proper contact form");
-      return res.status(422).json({ error: 'fill the proper details' });
+  if (!name || !email || !phone || !message) {
+    console.log('filled the proper contact form');
+    return res.status(422).json({ error: 'fill the proper details' });
   }
-  
+
   try {
-      
-    const userContact = await User.findOne({ _id: req.userID });//userID fetch in authentication middleware //user is there or not
+    const userContact = await User.findOne({ _id: req.userID }); //userID fetch in authentication middleware //user is there or not
 
     if (userContact) {
-      
-      const userMessage = await userContact.addMessage(name, email, phone, message);
+      //addMessage ==> model/userSchema
+      const userMessage = await userContact.addMessage(
+        name,
+        email,
+        phone,
+        message
+      );
 
       await userContact.save();
 
-      res.status(201).json({ message: "user contact succesffully" });
+      res.status(201).json({ message: 'user contact succesffully' });
     }
-
   } catch (error) {
     console.log(error);
   }
-})
+});
 
 // logout page
-
 // get user data for contact us page API
 router.get('/logout', (req, res) => {
   // console.log("hello this is logout");
-  res.clearCookie('jwtoken',{path:'/'})
-  res.status(200).send('User Logout')
-})
+  res.clearCookie('jwtoken', { path: '/' });
+  res.status(200).send('User Logout');
+});
 
+//<======= update detail api ======>
+router.post('/update', authenticate, async (req, res) => {
+  const { name, email, phone, work, password, cpassword } = req.body;
+
+  if (!name || !email || !phone || !work || !password || !cpassword) {
+    console.log('fill the proper detail');
+    return res.status(422).json({ error: 'fill the proper detail' });
+  } else if (password != cpassword) {
+    console.log('fill the proper password');
+    return res.status(422).json({ error: 'fill the proper password' });
+  }
+
+  try {
+    const userContact = await User.findOne({ _id: req.userID }); //userID fetch in authentication middleware //user is there or not
+
+    if (userContact) {
+      //addDetail ==> model/userSchema
+      const userMessage = await userContact.updateDetail(
+        name,
+        email,
+        phone,
+        work,
+        password,
+        cpassword
+      );
+
+      await userContact.save();
+
+      res.status(201).json({ message: 'updated succesffully' });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 module.exports = router;

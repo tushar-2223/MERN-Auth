@@ -108,6 +108,22 @@ userSchema.methods.addMessage = async function (name, email, phone, message) {
 }
 
 
+//update detail userschema
+userSchema.methods.updateDetail = async function (name, email, phone, work,password,cpassword) {
+    try {
+        
+        const update = await User.updateOne({
+            $set: {
+            name,email,phone,work,password,cpassword
+            }
+        })
+        
+        return update;
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 //collection creation
 const User = mongoose.model('USER', userSchema);
