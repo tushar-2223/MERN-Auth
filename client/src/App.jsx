@@ -11,9 +11,8 @@ import Error from './components/Error'
 import Logout from './components/Logout'
 
 import { initialState,reducer } from './reducer/UseReducer'
-// toggle nav
-//1. contextAPI
-//video 41
+// toggle navbar
+//contextAPI
 export const UserContext = createContext();
 
 const Routing = () => {
