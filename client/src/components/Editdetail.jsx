@@ -2,7 +2,9 @@ import React from 'react'
 
 function Editdetail() {
   return (
-    <div>Editdetail</div>
+    <>
+      this is the edit page
+    </>
   )
 }
 
