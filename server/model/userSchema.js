@@ -109,12 +109,17 @@ userSchema.methods.addMessage = async function (name, email, phone, message) {
 
 
 //update detail userschema
-userSchema.methods.updateDetail = async function (name, email, phone, work,password,cpassword) {
+userSchema.methods.updateDetail = async function (name, email, phone, work) {
+    
     try {
+    
+        // let pass = await bcrypt.hash(password, 12);
+        // let cpass = await bcrypt.hash(cpassword, 12);
         
         const update = await User.updateOne({
             $set: {
-            name,email,phone,work,password,cpassword
+                name, email, phone, work
+                // , password: pass, cpassword: cpass
             }
         })
         

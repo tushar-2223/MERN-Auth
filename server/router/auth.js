@@ -179,14 +179,11 @@ router.get('/logout', (req, res) => {
 
 //<======= update detail api ======>
 router.post('/update', authenticate, async (req, res) => {
-  const { name, email, phone, work, password, cpassword } = req.body;
+  const { name, email, phone, work} = req.body;
 
-  if (!name || !email || !phone || !work || !password || !cpassword) {
+  if (!name || !email || !phone || !work) {
     console.log('fill the proper detail');
     return res.status(422).json({ error: 'fill the proper detail' });
-  } else if (password != cpassword) {
-    console.log('fill the proper password');
-    return res.status(422).json({ error: 'fill the proper password' });
   }
 
   try {
@@ -198,9 +195,7 @@ router.post('/update', authenticate, async (req, res) => {
         name,
         email,
         phone,
-        work,
-        password,
-        cpassword
+        work
       );
 
       await userContact.save();
