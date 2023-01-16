@@ -19,7 +19,7 @@ const Signup = () => {
     setUser({ ...user, [name]: value });
   }
 
-  // send data to backend
+  //send data to backend
   //using fetch api
   const PostData = async(e) => {
     e.preventDefault();//dont reload page
